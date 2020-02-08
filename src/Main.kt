@@ -1,36 +1,35 @@
 fun main() {
-    val a = 100
-    val b = 200
+    val a: Number = 100
 
-    var maximum: Int? = null
-
-    // Traditional If condition
-    println("Checking a > b traditionally")
-    if (a > b) {
-        println("a > b")
-        maximum = a
-    } else {
-        println("a < b")
-        maximum = b
+    // Processing when with parameter
+    when (a) {
+        is Int -> println("Number is int")
+        is Double -> println("Number is double")
+        !is Float -> println("Number is not a float")
+        in 0f..10f -> println("Float is in 0 to 10")
+        else -> println("I don't know")
     }
-    println("Maximum = $maximum")
 
-
-    // If in Kotlin can return value
-    println("Checking a > b with if return")
-    maximum = if (a > b) {
-        println("a > b")
-        a // Will be assigned to maximum
-    } else {
-        println("a < b")
-        b // Will be assigned to maximum
+    // When expression returning value
+    val message = when (a) {
+        is Int -> "Number is int"
+        is Double -> "Number is double"
+        !is Float -> "Number is not a float"
+        in 0f..10f -> "Float is in 0 to 10"
+        else -> "I don't know"
     }
-    println("Maximum = $maximum")
+    println(message)
 
-    // As an expression
-    println("Checking the expression")
-    maximum = if (a > b) a else b
-    println("Maximum = $maximum")
+    // When without parameter returning value
+    val someString = "Hello World!"
+    val otherMessage = when {
+        a in 40..100 && someString.toUpperCase() == someString -> "String is uppercase and a is in 40..60"
+        someString.length > 10 -> "$someString is larger than 10 symbols"
+        a in 10..20 -> "$a is in 10..20 range"
+        a is Double -> "$a is Double"
+        else -> "I don't know"
+    }
 
+    println(otherMessage)
 }
 
