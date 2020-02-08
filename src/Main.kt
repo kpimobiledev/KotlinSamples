@@ -1,35 +1,40 @@
 fun main() {
-    val a: Number = 100
+    val ints = intArrayOf(1, 2, 3, 4, 5)
 
-    // Processing when with parameter
-    when (a) {
-        is Int -> println("Number is int")
-        is Double -> println("Number is double")
-        !is Float -> println("Number is not a float")
-        in 0f..10f -> println("Float is in 0 to 10")
-        else -> println("I don't know")
+    // For loop
+    println("For-in loop")
+    for (element in ints) {
+        println(element)
     }
 
-    // When expression returning value
-    val message = when (a) {
-        is Int -> "Number is int"
-        is Double -> "Number is double"
-        !is Float -> "Number is not a float"
-        in 0f..10f -> "Float is in 0 to 10"
-        else -> "I don't know"
-    }
-    println(message)
-
-    // When without parameter returning value
-    val someString = "Hello World!"
-    val otherMessage = when {
-        a in 40..100 && someString.toUpperCase() == someString -> "String is uppercase and a is in 40..60"
-        someString.length > 10 -> "$someString is larger than 10 symbols"
-        a in 10..20 -> "$a is in 10..20 range"
-        a is Double -> "$a is Double"
-        else -> "I don't know"
+    // For loop with indices
+    println("For-in loop with indices")
+    for (index in ints.indices) {
+        println(ints[index])
     }
 
-    println(otherMessage)
+    // For loop using range
+    println("For-in loop with range")
+    for (index in 0 until ints.size) {
+        println(ints[index])
+    }
+
+    // For loop using range (other way)
+    println("For-in loop with range x2")
+    for (index in 0..ints.size - 1) {
+        println(ints[index])
+    }
+
+    // For loop with range and step
+    println("For-in loop with steps and range")
+    for (index in 10 downTo 0 step 2) {
+        println(index)
+    }
+
+    // For loop with pair of index-value
+    println("For-in loop with index-value pair")
+    for ((index, value) in ints.withIndex()) {
+        println("Value at $index is $value")
+    }
 }
 
