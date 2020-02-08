@@ -1,26 +1,36 @@
-import java.util.*
-
 fun main() {
-    val helloString = "Hello World"
-    val concatenatedString = "Hello" + " " + "World"
+    val a = 100
+    val b = 200
 
-    val escapedString = "Hello!\nWorld!"
-    val rawString = """
-        I
-        Can
-        Do
-        Whatever I want
-        In this string
-        \n is not a symbol
-    """.trimIndent()
+    var maximum: Int? = null
 
-    val intConcat = "Hello" + 123
+    // Traditional If condition
+    println("Checking a > b traditionally")
+    if (a > b) {
+        println("a > b")
+        maximum = a
+    } else {
+        println("a < b")
+        maximum = b
+    }
+    println("Maximum = $maximum")
 
-    // String is also an array of characters and can be iterated through
-    println("$helloString letter by letter:")
-    helloString.forEach { println(it) }
 
-    val stringTemplate = "$intConcat length is ${intConcat.length}"
-    println(stringTemplate)
+    // If in Kotlin can return value
+    println("Checking a > b with if return")
+    maximum = if (a > b) {
+        println("a > b")
+        a // Will be assigned to maximum
+    } else {
+        println("a < b")
+        b // Will be assigned to maximum
+    }
+    println("Maximum = $maximum")
+
+    // As an expression
+    println("Checking the expression")
+    maximum = if (a > b) a else b
+    println("Maximum = $maximum")
+
 }
 
