@@ -1,29 +1,87 @@
 fun main() {
-    // Accessing the fields of an object
-    val person = Person()
-    println(person.name)
-    person.age = 100
-    person.phoneNumber = "+1234567890"
+    // Creating some objects of the classes with inheritance
+    val sample = Sample()
+    val figure = Figure()
+    val rectangle = Rectangle(4, 5)
+    val square = Square(4)
 
-    // Using lateinit property
-    person.drivingLicense = "A123456"
-    println(person.drivingLicense)
+    // Simple object creation and method calling
+    val animation = Animation()
+    println(animation.animationName)
+    println(animation.delayMillis)
+    animation.animate()
 
-    // Using custom-getter field
-    println("Name length is ${person.nameLength}")
+    val transitionAnimation = TransitionAnimation(10.0, 20.0)
+    println(transitionAnimation.animationName)
+    println(transitionAnimation.delayMillis)
+    transitionAnimation.animate()
 
-    // Using custom-getter and custom-setter field
-    person.address = "New address"
-    println("Address is set to ${person.address}")
+    val transition2DAnimation = Transition2DAnimation(10.0, 10.0, 20.0, 20.0)
+    println(transition2DAnimation.animationName)
+    println(transition2DAnimation.delayMillis)
+    transition2DAnimation.animate()
 
-    // Using class methods
-    person.sayHello()
-    val shippingAddress = person.getShippingAddress()
+    // Creating an object inheriting the Animation class
+    val customAnimation = object : Animation() {
+        override val animationName = "Custom Animation"
+        override var delayMillis = 1000L
 
-    // Using static field of a Person class
-    println(Person.DEFAULT_ADDRESS)
+        override fun animate() {
+            super.animate()
+            println("My own animate")
+        }
+    }
+    customAnimation.animate()
 
-    // Using static method of a Person class
-    val anotherPerson = Person.create(20, "+1234567890")
+
+    val customTransition = object : TransitionAnimation(10.0, 20.0) {
+        // Try to uncomment this line
+        // override val animationName = "Custom Transition"
+
+        override var delayMillis = 1000L
+
+        override fun animate() {
+            super.animate()
+            println("My own transition")
+        }
+    }
+    customTransition.animate()
+
+    val custom2DTransition = object : Transition2DAnimation(
+        10.0, 20.0, 10.0, 20.0
+    ) {
+        // Try to uncomment this line
+        // override val animationName = "Custom Transition"
+
+        override var delayMillis = 1000L
+
+        // Try to uncomment
+        //override fun animate() {
+        //    super.animate()
+        //    println("My own 2D transition")
+        //}
+    }
+    custom2DTransition.animate()
+
+    // Checking how same-named method inheritance/implementation works
+    val text = Text() // Creating base class instance
+    text.read()
+
+    val readable = object : Readable {} // Creating instance implementing interface
+    readable.read()
+
+    val book = Book()
+    book.read()
+
+    // Abstract class instance creation
+    val drawable = object : Drawable() {
+        override fun draw() {
+            println("I'm drawing something")
+        }
+    }
+    drawable.draw()
+
+    val shape = Shape()
+    shape.draw()
+
 }
-
