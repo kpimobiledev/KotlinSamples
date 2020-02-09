@@ -1,125 +1,73 @@
-import java.util.*
-
 fun main() {
-    val a = 10
-    val b = 20
+    // Creating an object of an empty class
+    val empty = Empty()
 
-    // Calling sum function
-    println("Sum of $a and $b is ${sum(a, b)}")
+    // Creating a person
+    val person = Person("John", 20)
+    val namedParamsPerson = Person(age = 20, name = "John")
 
-    // Calling printGreetings() function
-    printGreetings("Mario")
+    // Init block will be executed on object creation
+    val personWithInit = PersonWithInit("John", 20)
 
-    // Calling defaultGreetings() function with different parameters order
-    defaultGreetings()
-    defaultGreetings("Jane", 22)
-    defaultGreetings("Somebody")
-    defaultGreetings(age = randomAge())
-    defaultGreetings(age = randomAgeSugared(), name = "Jane") // Named parameters allow to change order
+    // Init block with calculated fields will be executed on object creation
+    val personWithFields = PersonWithFields("John", 20)
+    println(personWithFields.canDrive) // Accessible field
 
-    // Calling processGreetings differently
-    processGreetings(name = "Jane", age = 22, process = { greeting -> println(greeting) })
-    processGreetings("Joe", 22, { greeting -> println(greeting) })
-    processGreetings("John", 22) { greeting -> println(greeting) }
+    // Creating person with constructor fields
+    val personWithConstructorFields = PersonWithConstructorFields("John", 20)
+    println(personWithConstructorFields.age) // Accessible field
 
-    // Storing lambda as a parameter
-    val greetingProcessor = { greeting: String ->
-        println("Here's the greeting $greeting")
+    // Creating person with default args
+    val firstPerson = PersonWithDefaultArguments("John", 20)
+    val secondPerson = PersonWithDefaultArguments("Jane")
+
+    // Try to uncomment the line below
+    // val secretivePerson = SecretivePerson("Secret")
+}
+
+// Empty class without fields/methods and with empty constructor
+class Empty
+
+// Also an empty class definition
+class AlsoEmpty {}
+
+// Defining a class with its main constructor
+class Person constructor(name: String, age: Int)
+
+// Or just like that
+class AnotherPerson(name: String, age: Int)
+
+// This class has initialization block: called once the object is created
+class PersonWithInit(name: String, age: Int) {
+    init {
+        println("$name is $age years old")
     }
-    processGreetings("Joe", 22, greetingProcessor)
+}
 
-    // Using returned functional type
-    arrayOf(1, 2, 3, 4, 5).filter(makeDummyFilter(4))
+// This class has fields assigned with values based on constructor arguments
+class PersonWithFields(name: String, age: Int) {
+    private val capitalizedName = name.toUpperCase() // only accessible inside the class
+    var canDrive = age >= 18
 
-    // Calling vararg function
-    greetEverybody("John", "Jane")
-
-    // Using extension function
-    println("4 is even: ${4.isEven()}")
-
-    // Using infix function
-    println("4 + 5 = ${4 customAdd 5}")
-
-    // Calling inspectString() function looking if it has a 'e' symbol in it
-    println("Inspect string: ${inspectString("Some string", 'e')}")
-
-    // Calling recursive function
-    println("Launching a rocket!")
-    countToLaunch(5)
-
-    // Anonymous function assigned to a variable
-    val anonymousLength = fun(s: String): Int {
-        return s.length
+    init {
+        println("$capitalizedName can drive: $canDrive")
     }
-
-    anonymousLength("My string")
 }
 
-// Sample of function that takes arguments and returns a result
-fun sum(first: Int, second: Int): Int {
-    return first + second
-}
+// Fields and their visibility modifiers can be defined right in primary constructor
+class PersonWithConstructorFields(private val name: String, val age: Int)
 
-// Sample of function that takes arguments and doesn't return a result
-fun printGreetings(name: String): Unit = println("Hello, it's me, $name!")
+// This class has secondary constructor
+class PersonWithMultipleConstructors(val name: String) {
+    var age: Int? = null
 
-// Absolutely the same as above
-fun printGreetingsNoUnit(name: String) = println("Hello, it's me, $name!")
-
-// Sample of function that doesn't take arguments and returns a result
-fun randomAge(): Int {
-    return Random().nextInt(100)
-}
-
-// Single-line representation
-fun randomAgeSugared() = Random().nextInt(100)
-
-// Function with default arguments
-fun defaultGreetings(
-    name: String = "Mario",
-    age: Int = 42
-) = println("Hello, I'm $name! I'm $age years old")
-
-// Function accepting lambda as an argument
-fun processGreetings(
-    name: String,
-    age: Int,
-    process: (String) -> Unit
-) = "I'm $name, I'm $age years old".apply(process)
-
-// Function returning functional type value
-fun makeDummyFilter(value: Int): (Int) -> Boolean {
-    return { current: Int -> current == value }
-}
-
-// Function accepting variable amount of arguments
-fun greetEverybody(vararg names: String) {
-    names.forEach { println("Hello $it") }
-}
-
-// Extension function
-fun Int.isEven() = this % 2 == 0
-
-// Infix function: allows syntax 4 customAdd 5
-infix fun Int.customAdd(other: Int) = this + other
-
-// Function with a nested function
-fun inspectString(s: String, char: Char): Boolean {
-    // as the inspectChar() is nested in inspectString(), it sees the inspectString() function context
-    fun inspectChar(current: Char): Boolean {
-        return@inspectChar current == char
+    constructor(name: String, age: Int) : this(name) {
+        this.age = age
     }
-
-    var result = false
-    for (element in s) {
-        result = result || inspectChar(element)
-    }
-
-    return result
 }
 
-// Function with recursion
-tailrec fun countToLaunch(current: Int) {
-    println("$current!")
-    if (current > 1) countToLaunch(current - 1)
-}
+// Fields can be defined right in primary constructor
+class PersonWithDefaultArguments(val name: String, val age: Int = 100)
+
+// Constructors can have visibility modifiers too
+class SecretivePerson private constructor(secret: String)
