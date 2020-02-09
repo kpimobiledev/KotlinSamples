@@ -1,87 +1,41 @@
 fun main() {
-    // Creating some objects of the classes with inheritance
-    val sample = Sample()
-    val figure = Figure()
-    val rectangle = Rectangle(4, 5)
-    val square = Square(4)
-
-    // Simple object creation and method calling
-    val animation = Animation()
-    println(animation.animationName)
-    println(animation.delayMillis)
-    animation.animate()
-
-    val transitionAnimation = TransitionAnimation(10.0, 20.0)
-    println(transitionAnimation.animationName)
-    println(transitionAnimation.delayMillis)
-    transitionAnimation.animate()
-
-    val transition2DAnimation = Transition2DAnimation(10.0, 10.0, 20.0, 20.0)
-    println(transition2DAnimation.animationName)
-    println(transition2DAnimation.delayMillis)
-    transition2DAnimation.animate()
-
-    // Creating an object inheriting the Animation class
-    val customAnimation = object : Animation() {
-        override val animationName = "Custom Animation"
-        override var delayMillis = 1000L
-
-        override fun animate() {
-            super.animate()
-            println("My own animate")
+    // Creating objects implementing interfaces
+    val readable = object : Readable {
+        override fun read() {
+            println("I can read")
         }
     }
-    customAnimation.animate()
-
-
-    val customTransition = object : TransitionAnimation(10.0, 20.0) {
-        // Try to uncomment this line
-        // override val animationName = "Custom Transition"
-
-        override var delayMillis = 1000L
-
-        override fun animate() {
-            super.animate()
-            println("My own transition")
-        }
-    }
-    customTransition.animate()
-
-    val custom2DTransition = object : Transition2DAnimation(
-        10.0, 20.0, 10.0, 20.0
-    ) {
-        // Try to uncomment this line
-        // override val animationName = "Custom Transition"
-
-        override var delayMillis = 1000L
-
-        // Try to uncomment
-        //override fun animate() {
-        //    super.animate()
-        //    println("My own 2D transition")
-        //}
-    }
-    custom2DTransition.animate()
-
-    // Checking how same-named method inheritance/implementation works
-    val text = Text() // Creating base class instance
-    text.read()
-
-    val readable = object : Readable {} // Creating instance implementing interface
     readable.read()
+    readable.readWithBody()
 
     val book = Book()
     book.read()
+    book.readWithBody()
 
-    // Abstract class instance creation
-    val drawable = object : Drawable() {
-        override fun draw() {
-            println("I'm drawing something")
+    // Creating objects implementing interfaces with properties
+    val animation = object : Animation {
+        override var startValue = 0.0
+        override val duration = 1000L
+
+        override fun animate() {
+            println("Doing magnificent animation")
         }
     }
-    drawable.draw()
+    println(animation.delay) // Can refer to the interface default property
+    animation.animate()
 
-    val shape = Shape()
-    shape.draw()
+    val scaleAnimation = ScaleAnimation()
+    println(scaleAnimation.delay) // Can refer to the interface default property
+    scaleAnimation.animate()
+
+    // Conflict of interfaces
+    val buyable = object : Buyable {}
+    println("${buyable.getName()} can be bought by ${buyable.getPrice()}")
+
+    val storable = object : Storable {}
+    println("${storable.getName()} is a stored item by ${storable.getPrice()}")
+
+    val item = Item()
+    println("${item.getName()} is a stored item by ${item.getPrice()}")
 
 }
