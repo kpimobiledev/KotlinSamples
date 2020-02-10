@@ -1,41 +1,36 @@
 fun main() {
-    // Creating objects implementing interfaces
-    val readable = object : Readable {
-        override fun read() {
-            println("I can read")
+    val inner = Outer().Inner()
+    inner.innerMethod()
+
+    val nested = Outer.Nested()
+    nested.nestedMethod()
+}
+
+// Simple outer class with a few fields and methods
+class Outer {
+    private val outerVal = 100
+    var outerVar = "Hello"
+
+    fun outerMethod() { println("Do something") }
+
+    private fun otherOuterMethod() { println("Do something secretive") }
+
+    inner class Inner {
+        fun innerMethod() {
+            println(outerVal)
+            println(outerVar)
+            outerMethod()
+            otherOuterMethod()
         }
     }
-    readable.read()
-    readable.readWithBody()
 
-    val book = Book()
-    book.read()
-    book.readWithBody()
-
-    // Creating objects implementing interfaces with properties
-    val animation = object : Animation {
-        override var startValue = 0.0
-        override val duration = 1000L
-
-        override fun animate() {
-            println("Doing magnificent animation")
+    class Nested {
+        fun nestedMethod() {
+            // Try to uncomment it
+            // println(outerVal)
+            // println(outerVar)
+            // outerMethod()
+            // otherOuterMethod()
         }
     }
-    println(animation.delay) // Can refer to the interface default property
-    animation.animate()
-
-    val scaleAnimation = ScaleAnimation()
-    println(scaleAnimation.delay) // Can refer to the interface default property
-    scaleAnimation.animate()
-
-    // Conflict of interfaces
-    val buyable = object : Buyable {}
-    println("${buyable.getName()} can be bought by ${buyable.getPrice()}")
-
-    val storable = object : Storable {}
-    println("${storable.getName()} is a stored item by ${storable.getPrice()}")
-
-    val item = Item()
-    println("${item.getName()} is a stored item by ${item.getPrice()}")
-
 }
