@@ -1,30 +1,37 @@
 fun main() {
-    // Creating data class instance
-    val person = Person("John", 20)
-    // Copying data class
-    val otherPerson = person.copy(name = "Jane")
+    var animal = Animal.CAT
+    animal = Animal.DOG
 
-    // Referring data class params
-    println(person.name)
-    println(person.component1()) // Same as name
+    var currency = Currency.UAH
+    currency.someOtherValue = "value"
+    currency.printSymbol()
 
-    // Data classes can be decomposed like this
-    val (name, age) = person
-    val (_, otherPersonAge) = otherPerson // In case you don't need the name
-
-    // Decomposition in arrays processing
-    val array = arrayOf(person, otherPerson)
-    for ((currentName, currentAge) in array) {
-        println(currentName)
-        println(currentAge)
+    // When-expression doesn't require else if all enum values are options
+    val message = when (currency) {
+        Currency.UAH -> "Hryvnia"
+        Currency.EUR -> "Euro"
+        Currency.USD -> "Dollar"
     }
 
+    println(message)
 }
 
-// Simple data class
-// Kotlin makes equals(), hashCode(), copy(), toString() and componentN() – in this case 1 and 2
-data class Person(val name: String, var age: Int) {
-    // There can be body parameters, but they won't participate in decomposition
-    var someOptionalField: Int? = null
+// Simple enum class
+enum class Animal {
+    CAT,
+    DOG
+}
+
+// Enum class with constructor, additional value and a method
+enum class Currency(private val symbol: Char) {
+    USD('$'),
+    UAH('₴'),
+    EUR('€');
+
+    var someOtherValue: String? = null
+
+    fun printSymbol() {
+        print(symbol)
+    }
 }
 
