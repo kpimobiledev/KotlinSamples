@@ -1,35 +1,38 @@
 fun main() {
-    val namesList = arrayListOf("Alice", "Bob", "Caroline", "Daniel", "Ewan")
+    val namesList = arrayListOf("Michael", "Jim", "Pamela", "Dwight", "Angela")
+    val numbersList = arrayListOf(1.0, 2.0, 10.0, 4.0, 5.0, 42.0, 100.0, 0.0, 0.1, 0.3)
 
-    // Slicing a collection to receive a smaller collection
-    println(namesList.slice(1..4))
-    println(namesList.slice(0 until namesList.size step 2))
-    println(namesList.slice(setOf(1, 2, 3)))
+    // Strings and chars are sorted in lexicographical order
+    println(namesList.sorted())
+    println(namesList.sortedDescending())
 
-    // Getting part of collection by taking and dropping first/last values from it
-    println(namesList.take(2))
-    println(namesList.takeLast(4))
-    println(namesList.drop(1))
-    println(namesList.dropLast(3))
+    // Numbers are sorted by numeric order
+    println(numbersList.sorted())
+    println(numbersList.sortedDescending())
 
-    // Getting part of collection by taking and dropping first/last values
-    // from it while the condition is met
-    println(namesList.takeWhile { it.length < 6 })
-    println(namesList.takeLastWhile { it.toUpperCase() == it })
-    println(namesList.dropWhile { it.endsWith('e') })
-    println(namesList.dropLastWhile { it.startsWith('K') })
+    // Sorting the list of comparable items
+    val personList = listOf(Person("Alice", 25), Person("Bob", 18))
+    println(personList.sorted())
+    println(personList.sortedDescending())
 
-    // Collection chunks: create a collection of smaller collections of predefined chunk size
-    val chunkedNames = namesList.chunked(2)
-    println(chunkedNames)
+    // Using custom comparator to sort a collection
+    val strangeComparator = Comparator<Double> { first, second ->
+        (first * first - first).compareTo(second * second - second)
+    }
+    println(numbersList.sortedWith(strangeComparator))
 
-    // Chunks with transformation made on the each chunk
-    println(namesList.chunked(3) { it.joinToString(" and ") })
+    // Custom order sorting
+    println(personList.sortedBy { it.name })
+    println(personList.sortedByDescending { it.name })
 
-    // Windowing: creation of all the possible ranges of the predefined size
-    println(namesList.windowed(3))
-    println(namesList.windowed(1, step = 2))
+    // Reverse collection
+    println(namesList.reversed()) // New collection
+    println(namesList.asReversed()) // Different view of the same collection
 
-    // Windowing with transformation made on each window
-    println(namesList.windowed(3) { it.joinToString(" and ")})
+    // Randomly-ordered collection
+    println(namesList.shuffled())
+}
+
+data class Person(val name: String, private val age: Int) : Comparable<Person> {
+    override fun compareTo(other: Person) = age.compareTo(other.age)
 }
