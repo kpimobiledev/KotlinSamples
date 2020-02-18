@@ -1,38 +1,46 @@
+import kotlin.math.pow
+
 fun main() {
-    val namesList = arrayListOf("Michael", "Jim", "Pamela", "Dwight", "Angela")
-    val numbersList = arrayListOf(1.0, 2.0, 10.0, 4.0, 5.0, 42.0, 100.0, 0.0, 0.1, 0.3)
+    val numbers = arrayListOf(1.0, 2.0, 3.0, 4.0, 5.0)
 
-    // Strings and chars are sorted in lexicographical order
-    println(namesList.sorted())
-    println(namesList.sortedDescending())
+    // Simple aggregate operations
+    println("Count: ${numbers.count()}")
+    println("Max: ${numbers.max()}")
+    println("Min: ${numbers.min()}")
+    println("Average: ${numbers.average()}")
+    println("Sum: ${numbers.sum()}")
 
-    // Numbers are sorted by numeric order
-    println(numbersList.sorted())
-    println(numbersList.sortedDescending())
+    // Finding max and min values using condition
+    println(numbers.maxBy { it.pow(0.6) })
+    println(numbers.minBy { it.pow(3) - it.pow(2) })
 
-    // Sorting the list of comparable items
-    val personList = listOf(Person("Alice", 25), Person("Bob", 18))
-    println(personList.sorted())
-    println(personList.sortedDescending())
-
-    // Using custom comparator to sort a collection
+    // Using comparator
     val strangeComparator = Comparator<Double> { first, second ->
-        (first * first - first).compareTo(second * second - second)
+        (first.pow(0.3) - first).compareTo(second.pow(0.2) + second)
     }
-    println(numbersList.sortedWith(strangeComparator))
+    println(numbers.maxWith(strangeComparator))
+    println(numbers.minWith(strangeComparator))
 
-    // Custom order sorting
-    println(personList.sortedBy { it.name })
-    println(personList.sortedByDescending { it.name })
+    // Sum with condition
+    println(listOf(1, 2, 3).sumBy { it * 5 })
+    println(numbers.sumByDouble { it * 3 })
 
-    // Reverse collection
-    println(namesList.reversed()) // New collection
-    println(namesList.asReversed()) // Different view of the same collection
+    // Reducing: accumulation of value starting with first argument. So here the first element isn't doubled
+    val reducedSum = numbers.reduce { sum, element -> sum + element * 2 }
+    println(reducedSum)
 
-    // Randomly-ordered collection
-    println(namesList.shuffled())
-}
+    // Folding: accumulation of value starting with initial value. So here the first element is doubled
+    val foldSum = numbers.fold(0.0) { sum, element -> sum + element * 2 }
+    println(foldSum)
 
-data class Person(val name: String, private val age: Int) : Comparable<Person> {
-    override fun compareTo(other: Person) = age.compareTo(other.age)
+    // Folding and reducing right: from last to previous
+    println(numbers.reduceRight { element, initial ->
+        return@reduceRight initial - element * 2
+    })
+    println(numbers.foldRight(100.0) { element, initial -> initial - element * 2 })
+
+    // Folding and reducing with indices
+    println(numbers.reduceIndexed { index, acc, current -> if (index % 2 == 0) acc + current else acc })
+    println(numbers.foldIndexed(0.0) { index, acc, current -> if (index % 2 != 0) acc + current else acc })
+
 }
