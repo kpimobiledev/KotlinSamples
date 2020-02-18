@@ -1,142 +1,155 @@
-import kotlin.random.Random
-
 fun main() {
-    val myOptional = Optional(5)
 
-    // Try to change the Number in constructor invocation and method return to Int
-    val dummyProducer: DummyProducer<Number> = object : DummyProducer<Number>() {
-        override fun produceNext(): Number {
-            return 42
+    // Iterable is a parent interface of the Collection. It's also used in
+    // ranges and custom iterable objects
+    val iterable = Iterable {
+        object : Iterator<Int> {
+            override fun hasNext(): Boolean {
+                return true
+            }
+
+            override fun next(): Int {
+                return 42
+            }
         }
     }
 
-    // Covariant types: Producer<Int> value can be Producer<Number> value due to "out"
-    val producer: Producer<Number> = object : Producer<Int>() {
-        override fun produceNext(): Int {
-            return Random.nextInt()
+    // Iterable is a parent interface of the Collection. It's also used in
+    // ranges and custom iterable objects
+    val mutableIterable = object : MutableIterable<Int> {
+        override fun iterator(): MutableIterator<Int> {
+            return object : MutableIterator<Int> {
+                override fun hasNext(): Boolean {
+                    return true
+                }
+
+                override fun next(): Int {
+                    return 42
+                }
+
+                override fun remove() {}
+            }
         }
     }
 
-    // Try to change the Int in constructor invocation and method argument to Number
-    val dummyConsumer: DummyConsumer<Int> = object : DummyConsumer<Int>() {
-        override fun consumeNext(t: Int) {
-            println(t)
+    // Collection interface is used for collections in Kotlin (except Map)
+    val collection = object : Collection<Int> {
+        override val size: Int
+            get() = 42
+
+        override fun contains(element: Int): Boolean {
+            return false
         }
 
-    }
+        override fun containsAll(elements: Collection<Int>): Boolean {
+            return true
+        }
 
-    // Contravariant types: Consumer<Number> value can be Consumer<Int> value due to "in"
-    val consumer: Consumer<Int> = object : Consumer<Number>() {
-        override fun consumeNext(t: Number) {
-            println(t)
+        override fun isEmpty(): Boolean {
+            return size == 0
+        }
+
+        override fun iterator(): Iterator<Int> {
+            return object : Iterator<Int> {
+                override fun hasNext(): Boolean {
+                    return false
+                }
+
+                override fun next(): Int {
+                    return 42
+                }
+            }
         }
     }
 
-    // Two instances of custom collections
-    val firstCollection = MyCollection<Int>()
-    val secondCollection = MyCollection<Any>()
+    // MutableCollection interface is used for mutable collections in Kotlin (except Map)
+    val mutableCollection = object : MutableCollection<Int> {
+        override val size: Int
+            get() = 42
 
-    // Try uncommenting this line
-    // compareAny(firstCollection, secondCollection)
+        override fun contains(element: Int): Boolean {
+            return false
+        }
 
-    // Calling a function using on-site type variance: all derived types are suitable for "out"
-    addAll(firstCollection, secondCollection)
+        override fun containsAll(elements: Collection<Int>): Boolean {
+            return true
+        }
 
-    // Calling a function using on-site variance: all super types are suitable for "in"
-    addToCollection(secondCollection, 45)
+        override fun isEmpty(): Boolean {
+            return size == 0
+        }
 
-    // Calling generic functions
-    myFilter(arrayOf(1, 2, 3)) { it % 2 == 0 }
+        override fun iterator(): MutableIterator<Int> {
+            return object : MutableIterator<Int> {
+                override fun hasNext(): Boolean {
+                    return false
+                }
 
-    "Dummy string".myPrint()
-    4.myPrint()
+                override fun next(): Int {
+                    return 42
+                }
 
-    iterateNumbers(listOf(1, 2, 3))
-}
+                override fun remove() {}
+            }
+        }
 
-// Simple class boxing generic value
-class Optional<T>(t: T?) {
-    var value = t
-}
+        override fun add(element: Int): Boolean {
+            return true
+        }
 
-// This is a producer class that can produce T type values. Though you can't
-// assign DummyProducer<Derived> value to DummyProducer<Base> variable
-abstract class DummyProducer<T> {
-    abstract fun produceNext(): T
-}
+        override fun addAll(elements: Collection<Int>): Boolean {
+            return true
+        }
 
-// This is a producer class that supports type covariance: e.g. you can assign
-// Producer<Derived> value to Producer<Base> variable.
-// Bad news: Producer<T> can't consume values of type T
-abstract class Producer<out T> {
-    abstract fun produceNext(): T
-}
+        override fun clear() {}
 
-// This is a consumer class that can consume T type values. Though you can't
-// assign DummyConsumer<Derived> variable to DummyConsumer<Base> value
-abstract class DummyConsumer<T> {
-    abstract fun consumeNext(t: T)
-}
+        override fun remove(element: Int): Boolean {
+            return false
+        }
 
-// This is a consumer class that supports contravariant types: e.g. you can assign
-// Consumer<Derived> value to Consumer<Base> variable.
-// Bad news: Consumer<T> can't produce values of type T
-abstract class Consumer<in T> {
-    abstract fun consumeNext(t: T)
-}
+        override fun removeAll(elements: Collection<Int>): Boolean {
+            return false
+        }
 
-// Class that has consuming and producing methods but doesn't have
-// any co- or contravariance options
-class MyCollection<T> {
-    private val list = ArrayList<T>()
-
-    // Dummy consuming method
-    fun add(element: T) {
-        list.add(element)
+        override fun retainAll(elements: Collection<Int>): Boolean {
+            return true
+        }
     }
 
-    // Dummy producing method
-    fun get(index: Int): T {
-        return list[index]
-    }
+    // Read-only Kotlin collections: List, Set, Map
+    val list = listOf(1, 2, 3)
+    val set = setOf('a', 'b', 'c')
+    val map = mapOf(1 to "Alice", 2 to "Bob")
 
-    fun size() = list.size
-}
+    // Some actions on read-only collections
+    println(list[0])
+    set.forEach { println(it) }
+    map.filterKeys { it % 2 == 0 }.forEach { (key, value) -> println("$key : $value") }
 
-// Function that takes two collections of Any and compares them.
-// In case the collection has the generic type derived from Any, the function won't work with such collection
-fun compareAny(first: MyCollection<Any>, second: MyCollection<Any>): Boolean {
-    if (first.size() != second.size()) return false
+    // Mutable Kotlin collections: MutableList, MutableSet, MutableMap
+    val mutableList = mutableListOf(1, 2, 3)
+    val mutableSet = mutableSetOf('a', 'b', 'c')
+    val mutableMap = mutableMapOf(1 to "Alice", 2 to "Bob")
 
-    // Dummy comparison
-    var result = true
-    for (index in 0 until first.size()) result = result && (first.get(index) == second.get(index))
-    return result
-}
+    // Some actions on mutable collections
+    mutableList.add(5)
+    mutableSet.remove('b')
+    mutableMap[3] = "Carl"
 
-// Function that adds all items from the first collection to the second one
-// Bad news: you can't call consuming methods on on-site "out" arguments
-fun addAll(from: MyCollection<out Any>, to: MyCollection<Any>) {
-    for (index in 0 until from.size()) to.add(from.get(index))
-}
+    // Creation of collections constructed with elements
+    val elementsList = listOf(1, 2, 3)
+    val emptyList = emptyList<String>()
+    val applyMap = mutableMapOf<String, Int>().apply { this["Alice"] = 5 }
 
-// Function that adds a value to collection. Collection can be super-type of Number
-fun addToCollection(to: MyCollection<in Number>, value: Number) {
-    to.add(value)
-}
+    // Creation with lambda function
+    val lambdaList = List(5) { it.toString() }
 
-// Generic function consuming and producing parametrized type values
-fun <T> myFilter(array: Array<T>, rule: (T) -> Boolean): Array<T> {
-    // ...
-    return array
-}
+    // Creation with concrete type constructor
+    val someSet = HashSet<Int>(5)
+    val linkedHashMap = LinkedHashMap<String, String>(10)
 
-// Generic extension function
-fun <T> T.myPrint() {
-    println(this.toString())
-}
+    // Transforming collections
+    val dummyTransformedCollection = someSet.toMutableSet().toMutableList()
+    val squaredElementsMap = elementsList.associateWith { it * it }
 
-// Types in generics can be restricted
-fun <T : Number> iterateNumbers(iterable: Iterable<T>) {
-    // ...
 }
