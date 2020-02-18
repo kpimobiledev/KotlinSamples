@@ -1,17 +1,34 @@
+import java.lang.StringBuilder
+
 fun main() {
-    val namesList = arrayListOf("Alice", "Bob")
-    val optionalNamesSet = mutableSetOf("Alice", null, "Bob", null)
+    val countries = listOf("Ukraine", "USA", "Australia", "Austria", "Switzerland")
 
-    // Adding element to a list
-    namesList += "Carl"
-    println(namesList.joinToString())
+    // Group list items by first letter
+    val alphabetCountryMap = countries.groupBy { it.first() }.forEach { println(it.key) }
 
-    // Extracting element from a list and assigning a result to another variable
-    val otherNamesList = namesList - "Alice"
-    println(otherNamesList.joinToString())
+    // Grouping by: grouping that supports functions on groups
 
-    // Removing elements list from set. Removing null removes all nulls
-    optionalNamesSet -= listOf("Bob", null)
-    println(optionalNamesSet.size == 1)
-    println(optionalNamesSet.joinToString())
+    // Creation of map of Letter / countries count per letter
+    countries.groupingBy { it.first() }.eachCount().forEach { (t, u) -> println("$t, $u") }
+
+    // Creates a map of Char to String, String is composed by fold() function
+    countries
+        .groupingBy { it.first() }
+        .fold("by default") { accumulator, element -> "$accumulator, $element" }
+        .forEach { (t, u) -> println("$t, $u") }
+
+    // Creates a map of Char to String, String is composed by reduce() function
+    countries
+        .groupingBy { it.first() }
+        .reduce { _, acc, element -> "$acc, $element" }
+        .forEach { (t, u) -> println("$t, $u") }
+
+    // Creates a map of Char to aggregated String composed by aggregate() function
+    countries
+        .groupingBy { it.first() }
+        .aggregate { key, accumulator: StringBuilder?, element, first ->
+            return@aggregate if (first) StringBuilder("By $key we have $element")
+            else accumulator!!.append(", $element")
+        }
+        .forEach { (t, u) -> println("$t, $u") }
 }
